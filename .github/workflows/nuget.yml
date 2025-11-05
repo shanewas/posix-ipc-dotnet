@@ -13,7 +13,6 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      # Optional NuGet cache
       - uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
@@ -21,15 +20,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      # Restore/build the library project explicitly
+      # Explicit project paths (no .sln in root)
       - run: dotnet restore src/PosixIpc/PosixIpc.csproj
-      - run: dotnet build src/PosixIpc/PosixIpc.csproj -c Release --no-restore
+      - run: dotnet build   src/PosixIpc/PosixIpc.csproj -c Release --no-restore
 
-      # Run tests on Linux to exercise SysV IPC (ignore failures if none exist yet)
+      # Optional: run tests but don't fail publish if tests fail for any reason
       - run: dotnet restore tests/PosixIpc.Tests/PosixIpc.Tests.csproj
-      - run: dotnet test tests/PosixIpc.Tests/PosixIpc.Tests.csproj -c Release --no-build || true
+      - run: dotnet test tests/PosixIpc.Tests/PosixIpc.Tests.csproj -c Release --settings coverlet.runsettings || true
 
-      # Pack with the tag version (vX.Y.Z -> X.Y.Z)
+      # Pack with tag version (vX.Y.Z -> X.Y.Z)
       - run: dotnet pack src/PosixIpc/PosixIpc.csproj -c Release -o ./nupkgs /p:Version=${GITHUB_REF_NAME#v}
 
       # Push to NuGet

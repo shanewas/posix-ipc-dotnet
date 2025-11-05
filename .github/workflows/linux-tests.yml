@@ -18,21 +18,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      # Restore projects explicitly (no .sln in root)
       - run: dotnet restore src/PosixIpc/PosixIpc.csproj
       - run: dotnet restore tests/PosixIpc.Tests/PosixIpc.Tests.csproj
 
       - run: dotnet build src/PosixIpc/PosixIpc.csproj -c Release --no-restore
+      - run: dotnet build tests/PosixIpc.Tests/PosixIpc.Tests.csproj -c Release --no-restore
 
-      # Run tests with coverage
-      - run: >
-          dotnet test tests/PosixIpc.Tests/PosixIpc.Tests.csproj -c Release --no-build
-          /p:CollectCoverage=true
-          /p:CoverletOutput=TestResults/coverage/
-          /p:CoverletOutputFormat=opencover
+      # Run tests with coverage via runsettings (no /p: flags)
+      - run: dotnet test tests/PosixIpc.Tests/PosixIpc.Tests.csproj -c Release --no-build --settings coverlet.runsettings
 
-      # Optional: upload coverage artifact
       - uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: tests/PosixIpc.Tests/TestResults/coverage/
+          path: tests/PosixIpc.Tests/TestResults/coverage
