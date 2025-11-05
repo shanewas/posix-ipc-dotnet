@@ -4,8 +4,9 @@ _A lightweight .NET library for System V shared memory and semaphores on Linux (
 - No native payloads; P/Invoke to `libc.so.6`.
 - Designed for same-host, low-latency IPC between processes.
 
-````markdown
 ## Install
+[![NuGet](https://img.shields.io/nuget/v/Shanewas.PosixIpc.svg)](https://www.nuget.org/packages/Shanewas.PosixIpc/)
+````markdown
 dotnet add package Shanewas.PosixIpc
 ````
 
