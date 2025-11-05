@@ -5,6 +5,7 @@ using Shanewas.PosixIpc;
 
 namespace PosixIpc.Tests
 {
+    [SupportedOSPlatform("linux")]
     public class PosixIpcHelperTests
     {
         private static bool IsLinux => OperatingSystem.IsLinux();
