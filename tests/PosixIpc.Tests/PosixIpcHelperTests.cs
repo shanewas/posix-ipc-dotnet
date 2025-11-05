@@ -2,6 +2,7 @@
 using System.Text;
 using Xunit;
 using Shanewas.PosixIpc;
+using System.Runtime.Versioning;
 
 namespace PosixIpc.Tests
 {

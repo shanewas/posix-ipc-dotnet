@@ -14,7 +14,6 @@ namespace Shanewas.PosixIpc
     /// Helper for Linux/Unix inter-process communication (IPC).
     /// Provides access to System V Shared Memory and Semaphores.
     /// </summary>
-    [SupportedOSPlatform("linux")]
     public class PosixIpcHelper : IDisposable
     {
         //=============================================================================
