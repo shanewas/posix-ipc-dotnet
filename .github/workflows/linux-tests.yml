@@ -1,0 +1,38 @@
+name: linux-tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      # Restore projects explicitly (no .sln in root)
+      - run: dotnet restore src/PosixIpc/PosixIpc.csproj
+      - run: dotnet restore tests/PosixIpc.Tests/PosixIpc.Tests.csproj
+
+      - run: dotnet build src/PosixIpc/PosixIpc.csproj -c Release --no-restore
+
+      # Run tests with coverage
+      - run: >
+          dotnet test tests/PosixIpc.Tests/PosixIpc.Tests.csproj -c Release --no-build
+          /p:CollectCoverage=true
+          /p:CoverletOutput=TestResults/coverage/
+          /p:CoverletOutputFormat=opencover
+
+      # Optional: upload coverage artifact
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: tests/PosixIpc.Tests/TestResults/coverage/

@@ -1,0 +1,84 @@
+# Build artifacts
+bin/
+obj/
+out/
+artifacts/
+nupkgs/
+TestResults/
+*.nupkg
+*.snupkg
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.userprefs
+*.csproj.user
+
+# Visual Studio / VSCode
+.vs/
+.vscode/
+.idea/
+
+# Logs
+*.log
+*.tlog
+*.svclog
+
+# Temp files
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+*.swp
+*.swn
+*.swo
+
+# NuGet
+*.nuspec
+packages/
+.nuget/
+# Local NuGet cache (optional)
+# ~/.nuget/packages/
+
+# Coverage and test tools
+coverage*.json
+coverage*.xml
+coverage*.info
+lcov-report/
+*.opencover.xml
+
+# Rider / JetBrains
+*.DotSettings.user
+_ReSharper.Caches/
+
+# OS-specific
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+# Linux
+*~
+
+# GitHub Actions and CI output
+*.coverage
+*.trx
+
+# Other IDEs / editors
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+
+# Publish output
+publish/
+dist/
+
+# Tooling
+*.lock.json
+project.lock.json
+global.json
