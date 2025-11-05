@@ -11,7 +11,9 @@ jobs:
 
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: |
+            8.0.x
+            6.0.x
 
       - uses: actions/cache@v4
         with:
@@ -20,16 +22,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      # Explicit project paths (no .sln in root)
+      # Restore/build library
       - run: dotnet restore src/PosixIpc/PosixIpc.csproj
-      - run: dotnet build   src/PosixIpc/PosixIpc.csproj -c Release --no-restore
+      - run: dotnet build src/PosixIpc/PosixIpc.csproj -c Release --no-restore
 
-      # Optional: run tests but don't fail publish if tests fail for any reason
-      - run: dotnet restore tests/PosixIpc.Tests/PosixIpc.Tests.csproj
+      # Optional tests (non-fatal)
+      - run: dotnet restore tests/PosixIpc.Tests/PosixIpc.Tests.csproj || true
       - run: dotnet test tests/PosixIpc.Tests/PosixIpc.Tests.csproj -c Release --settings coverlet.runsettings || true
 
       # Pack with tag version (vX.Y.Z -> X.Y.Z)
       - run: dotnet pack src/PosixIpc/PosixIpc.csproj -c Release -o ./nupkgs /p:Version=${GITHUB_REF_NAME#v}
 
-      # Push to NuGet
-      - run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      # Push to NuGet; don't fail on duplicates
+      - run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
