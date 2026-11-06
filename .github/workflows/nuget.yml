@@ -6,6 +6,8 @@ on:
 jobs:
   pack-push:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -33,5 +35,11 @@ jobs:
       # Pack with tag version (vX.Y.Z -> X.Y.Z)
       #- run: dotnet pack src/PosixIpc/PosixIpc.csproj -c Release -o ./nupkgs /p:Version=${GITHUB_REF_NAME#v}
 
+      # NuGet login (OIDC -> temporary API key via Trusted Publishing)
+      - uses: NuGet/login@v1
+        id: login
+        with:
+          user: ShanewasAhmed
+
       # Push to NuGet; don't fail on duplicates
-      - run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
